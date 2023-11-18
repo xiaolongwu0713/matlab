@@ -21,11 +21,13 @@ elseif strcmpi(type,'ECoG')
 end
 
 %% initialize port
+send_trigger=0;
 ps_list=serialportlist;
-if isempty(ps_list)
-    send_trigger=0;
+if isempty(ps_list) && send_trigger
+    %send_trigger=0;
     error('No port available, please connect the trigger box!');
-else
+end
+if  send_trigger 
     port=ps_list{1,1};
     portNr=str2num(port(end));
     send_trigger=1;
@@ -86,12 +88,20 @@ sentences='.\audio\sentences.txt';
 f=fileread(sentences);
 prompts = strsplit(f,'\n');
 
+[ret, name] = system('hostname');     
+if strcmp(strip(name),'Long')  
+    audio_folder='D:\data\speech_Southmead\audio\original\15_seconds'; %afile_tmp.folder;
+else
+    audio_folder='.\audio\original\15_second_wavs'; %afile_tmp.folder;
+end
 
 %%  Ready to go (trigger 1)
-if strcmpi(type,'ECoG')
-    fprintf(arduino,'0');
-elseif strcmpi(type,'SEEG')
-    send_ns_trigger(TriggerValue, TriggerPort);
+if  send_trigger 
+    if strcmpi(type,'ECoG')
+        fprintf(arduino,'0');
+    elseif strcmpi(type,'SEEG')
+        send_ns_trigger(TriggerValue, TriggerPort);
+    end
 end
 text='Press a Key When You Are Ready!';
 Screen('TextSize', w ,70);
@@ -116,13 +126,14 @@ prompt_shown=[];
 pause('on');
 escape=0;
 recordedaudio=[]; 
+
 for i=1:100 % 100 sentence; size(audio_files)
     
     %afile_tmp=audio_files(i);
     %folder='.\audio\clips'; %afile_tmp.folder; 
-    folder='.\audio\original\15_second_wavs'; %afile_tmp.folder;
+    
     filename=strcat(string(i),'.wav');%afile_tmp.name;
-    afile=strcat(folder,'\', filename);
+    afile=strcat(audio_folder,'\', filename);
     fprintf('Read file: %s. \n',filename);
     read_files=[read_files, filename];
     
@@ -144,10 +155,12 @@ for i=1:100 % 100 sentence; size(audio_files)
     repetitions=1;
     Screen('Drawtext',w,sentence,xc-width/2,yc,[255 255 255]);
     Screen('Flip',w);
-    if strcmpi(type,'ECoG')
-        fprintf(arduino,'0');
-    elseif strcmpi(type,'SEEG')
-        send_ns_trigger(TriggerValue, TriggerPort);
+    if  send_trigger 
+        if strcmpi(type,'ECoG')
+            fprintf(arduino,'0');
+        elseif strcmpi(type,'SEEG')
+            send_ns_trigger(TriggerValue, TriggerPort);
+        end
     end
     % PsychPortAudio doesn't wait to finish speaking
     % playback and record at the same time
@@ -158,7 +171,7 @@ for i=1:100 % 100 sentence; size(audio_files)
     a_now=datevec(datenum(datetime));
     while etime(a_now, T)<15
         
-        pause(1);
+        %pause(1);
         [pressed, keyCode]=KbQueueCheck(deviceIndex);
         pressedKeys = KbName(keyCode);
         if strcmp(pressedKeys,'space')
@@ -169,10 +182,12 @@ for i=1:100 % 100 sentence; size(audio_files)
                 Screen('Flip',w);
                 Screen('Drawtext',w,sentence,xc-width/2,yc,[255 255 255]);
                 Screen('Flip',w);
-                if strcmpi(type,'ECoG')
-                    fprintf(arduino,'0');
-                elseif strcmpi(type,'SEEG')
-                    send_ns_trigger(TriggerValue, TriggerPort);
+                if  send_trigger 
+                    if strcmpi(type,'ECoG')
+                        fprintf(arduino,'0');
+                    elseif strcmpi(type,'SEEG')
+                        send_ns_trigger(TriggerValue, TriggerPort);
+                    end
                 end
                 t1 = PsychPortAudio('Start', pahandle, repetitions, 0, 1);
                 pausing=0;
@@ -198,7 +213,7 @@ for i=1:100 % 100 sentence; size(audio_files)
         if pausing
             T=datevec(datenum(datetime));
         end
-        pause(0.5);
+        pause(0.1);
         a_now=datevec(datenum(datetime));
     end
     
@@ -218,10 +233,12 @@ end
 
 
 %% close port
-if strcmpi(type,'ECoG')
-    fclose(arduino);
-elseif strcmpi(type,'SEEG')
-    close_ns_port(TriggerPort);
+if  send_trigger 
+    if strcmpi(type,'ECoG')
+        fclose(arduino);
+    elseif strcmpi(type,'SEEG')
+        close_ns_port(TriggerPort);
+    end
 end
 
 %% clear up things
