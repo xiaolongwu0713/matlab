@@ -199,7 +199,7 @@ for i=1:100 % 100 sentence; size(audio_files)
                 PsychPortAudio('Stop', pahandle);
                 pausing=1;
                 T=datevec(datenum(datetime)); % reset the 15s delay
-                pause(0.5);
+                pause(0.3);
             end
             
         elseif strcmp(pressedKeys,'ESCAPE')
@@ -213,7 +213,7 @@ for i=1:100 % 100 sentence; size(audio_files)
         if pausing
             T=datevec(datenum(datetime));
         end
-        pause(0.1);
+        %pause(0.1);
         a_now=datevec(datenum(datetime));
     end
     
