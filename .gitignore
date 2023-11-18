@@ -1,0 +1,44 @@
+#motorImageryClassification/
+Plot_Topography-backup/
+iEEGview_demo-backup/
+iEEGview_demo/
+plot_demo/
+fingerflex/
+GoogleAutoML/
+#ruijin/
+#codeLGY/
+eeglab
+eeglab2020_0/
+eeglab2020_0.bak/
+force.bak/
+iEEGview_V20190621/
+spm12/
+tmp/
+DICOM/
+codeLGY/
+codeLSJ/
+force/
+#wangmeng/Master Thesis/
+#wangmeng/MatLabCustToolbox/
+#wangmeng/standard brain/
+wangmeng/
+# neural data
+*.dcm
+*.img
+*.hdr
+*.vtk
+
+*.rar
+*.zip
+*.txt
+*.pth
+*.npy
+*.mat
+*.jpg
+*.PNG
+*.png
+*.pdf
+*.fig
+.idea/
+data/
+figs/
