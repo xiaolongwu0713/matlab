@@ -21,7 +21,7 @@ elseif strcmpi(type,'ECoG')
 end
 
 %% initialize port
-send_trigger=0;
+send_trigger=1;
 ps_list=serialportlist;
 if isempty(ps_list) && send_trigger
     %send_trigger=0;
@@ -154,6 +154,9 @@ for i=1:100 % 100 sentence; size(audio_files)
     
     repetitions=1;
     Screen('Drawtext',w,sentence,xc-width/2,yc,[255 255 255]);
+    Screen('FillOval',w,[0 255 0],[xc-width/2-200,yc-100,xc-width/2,yc+100]);
+    Screen('Flip',w);
+    Screen('Drawtext',w,sentence,xc-width/2,yc,[255 255 255]);
     Screen('Flip',w);
     if  send_trigger 
         if strcmpi(type,'ECoG')
@@ -167,9 +170,26 @@ for i=1:100 % 100 sentence; size(audio_files)
     t1 = PsychPortAudio('Start', pahandle, repetitions, 0, 1); %0:start it immediately;
     
     pausing=0;
-    T=datevec(datenum(datetime));
+    trial_begin=datevec(datenum(datetime));
     a_now=datevec(datenum(datetime));
-    while etime(a_now, T)<15
+    flash1=0;
+    flash2=0;
+    while etime(a_now, trial_begin)<15
+        if seconds(diff(datetime([trial_begin;a_now])))>5 && flash1==0
+            Screen('Drawtext',w,sentence,xc-width/2,yc,[255 255 255]);
+            Screen('FillOval',w,[0 255 0],[xc-width/2-200,yc-100,xc-width/2,yc+100]);
+            Screen('Flip',w);
+            Screen('Drawtext',w,sentence,xc-width/2,yc,[255 255 255]);
+            Screen('Flip',w);
+            flash1=1;
+        elseif seconds(diff(datetime([trial_begin;a_now])))>10 && flash2==0
+            Screen('Drawtext',w,sentence,xc-width/2,yc,[255 255 255]);
+            Screen('FillOval',w,[0 255 0],[xc-width/2-200,yc-100,xc-width/2,yc+100]);
+            Screen('Flip',w);
+            Screen('Drawtext',w,sentence,xc-width/2,yc,[255 255 255]);
+            Screen('Flip',w);
+            flash2=1;
+        end
         
         %pause(1);
         [pressed, keyCode]=KbQueueCheck(deviceIndex);
@@ -198,7 +218,7 @@ for i=1:100 % 100 sentence; size(audio_files)
                 Screen('Flip',w);
                 PsychPortAudio('Stop', pahandle);
                 pausing=1;
-                T=datevec(datenum(datetime)); % reset the 15s delay
+                trial_begin=datevec(datenum(datetime)); % reset the 15s delay
                 pause(0.3);
             end
             
@@ -211,7 +231,7 @@ for i=1:100 % 100 sentence; size(audio_files)
         
         % keep pausing for a long time
         if pausing
-            T=datevec(datenum(datetime));
+            trial_begin=datevec(datenum(datetime));
         end
         %pause(0.1);
         a_now=datevec(datenum(datetime));
