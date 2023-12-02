@@ -67,8 +67,7 @@ InitializePsychSound(0);
 freq=48000;
 %pahandle = PsychPortAudio(‘Open’ [, deviceid][, mode][, reqlatencyclass][, freq][, channels][, buffersize][, suggestedLatency][, selectchannels][, specialFlags=0]);
 pahandle = PsychPortAudio('Open', [], 3,1,freq,[2,2]) ;%3 for play and record
-%[oldMasterVolume, oldChannelVolumes] = PsychPortAudio(‘Volume’, pahandle [, masterVolume][, channelVolumes]);
-[v1,v2]=PsychPortAudio('Volume', pahandle,0.5);
+
 %s = PsychPortAudio('GetStatus', pahandle);
 %freq = s.SampleRate;
 Sub{3,1}=freq;
