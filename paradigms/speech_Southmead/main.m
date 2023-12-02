@@ -1,4 +1,5 @@
 sca;close all;clear all;delete(instrfindall);
+Priority(1);
 
 %% experiment type and user info
 Sub=inputdlg({'Type','Patient initial'},'Info',1,{'ECoG or SEEG',''});
@@ -23,7 +24,7 @@ end
 %% initialize port
 send_trigger=1;
 ps_list=serialportlist;
-if isempty(ps_list) && send_trigger
+if isempty(ps_list) && strcmpi(type,'SEEG')
     %send_trigger=0;
     error('No port available, please connect the trigger box!');
 end
@@ -33,20 +34,20 @@ if  send_trigger
     send_trigger=1;
     fprintf('Using port: COM%d.\n',portNr);
     
-    if strcmpi(type,'ECoG')
-        arduino=serial(port,'BaudRate',9600,'DataBits',8);
-        InputBufferSize=8;
-        Timeout=0.1;
-        set(arduino, 'InputBufferSize',InputBufferSize);
-        set(arduino, 'Timeout',Timeout);
-        set(arduino, 'Terminator','CR');
-        fopen(arduino);
-    elseif strcmpi(type,'SEEG')
+    %if strcmpi(type,'ECoG')
+    %    arduino=serial(port,'BaudRate',9600,'DataBits',8);
+    %    InputBufferSize=8;
+    %   Timeout=0.1;
+    %   set(arduino, 'InputBufferSize',InputBufferSize);
+    %    set(arduino, 'Timeout',Timeout);
+    %    set(arduino, 'Terminator','CR');
+    %    fopen(arduino);
+    if strcmpi(type,'SEEG')
         TriggerPort=open_ns_port(portNr);
         TriggerValue=1;
     end
 end
-
+HideCursor;
 %% screen setup
 %%-------uncomment below if SYNCHRONIZATION FAILURE ----------------
 Screen('Preference', 'SkipSyncTests', 1);  
@@ -59,8 +60,7 @@ slack=Screen('GetFlipInterval',w)/2;
 % Get the screen dimensions
 screenWidth = rect(3); 
 screenHeight = rect(4);
-Priority(1);
-HideCursor;
+
 
 %% audio setup
 InitializePsychSound(0);
@@ -92,14 +92,18 @@ prompts = strsplit(f,'\n');
 if strcmp(strip(name),'Long')  
     audio_folder='D:\data\speech_Southmead\audio\original\15_seconds'; %afile_tmp.folder;
 else
-    audio_folder='.\audio\original\15_second_wavs'; %afile_tmp.folder;
+    if strcmpi(type,'SEEG')
+        audio_folder='.\audio\original\15_second_wavs'; %afile_tmp.folder;
+    elseif strcmpi(type,'ECoG')
+        audio_folder='.\audio\square_wave\15_second_wavs'; %afile_tmp.folder;
+    end
 end
 
 %%  Ready to go (trigger 1)
 if  send_trigger 
-    if strcmpi(type,'ECoG')
-        fprintf(arduino,'0');
-    elseif strcmpi(type,'SEEG')
+    %if strcmpi(type,'ECoG')
+    %    fprintf(arduino,'0');
+    if strcmpi(type,'SEEG')
         send_ns_trigger(TriggerValue, TriggerPort);
     end
 end
@@ -154,14 +158,15 @@ for i=1:100 % 100 sentence; size(audio_files)
     
     repetitions=1;
     Screen('Drawtext',w,sentence,xc-width/2,yc,[255 255 255]);
-    Screen('FillOval',w,[0 255 0],[xc-width/2-200,yc-100,xc-width/2,yc+100]);
+    Screen('FillOval',w,[0 255 0],[xc-width/2-400,yc-300,xc-width/2,yc+100]);
     Screen('Flip',w);
     Screen('Drawtext',w,sentence,xc-width/2,yc,[255 255 255]);
     Screen('Flip',w);
+    
     if  send_trigger 
-        if strcmpi(type,'ECoG')
-            fprintf(arduino,'0');
-        elseif strcmpi(type,'SEEG')
+        %if strcmpi(type,'ECoG')
+        %    fprintf(arduino,'0');
+        if strcmpi(type,'SEEG')
             send_ns_trigger(TriggerValue, TriggerPort);
         end
     end
@@ -175,16 +180,24 @@ for i=1:100 % 100 sentence; size(audio_files)
     flash1=0;
     flash2=0;
     while etime(a_now, trial_begin)<15
+        
+        if (etime(a_now, trial_begin)<4.5) || ((etime(a_now, trial_begin)>10.3) && (etime(a_now, trial_begin)<14.5))
+            pause(0.3)
+        end
+        if (5.3<etime(a_now, trial_begin)) && (etime(a_now, trial_begin)<9.5)
+            pause(0.3)
+        end
+        
         if seconds(diff(datetime([trial_begin;a_now])))>5 && flash1==0
             Screen('Drawtext',w,sentence,xc-width/2,yc,[255 255 255]);
-            Screen('FillOval',w,[0 255 0],[xc-width/2-200,yc-100,xc-width/2,yc+100]);
+            Screen('FillOval',w,[0 255 0],[xc-width/2-400,yc-300,xc-width/2,yc+100]);
             Screen('Flip',w);
             Screen('Drawtext',w,sentence,xc-width/2,yc,[255 255 255]);
             Screen('Flip',w);
             flash1=1;
         elseif seconds(diff(datetime([trial_begin;a_now])))>10 && flash2==0
             Screen('Drawtext',w,sentence,xc-width/2,yc,[255 255 255]);
-            Screen('FillOval',w,[0 255 0],[xc-width/2-200,yc-100,xc-width/2,yc+100]);
+            Screen('FillOval',w,[0 255 0],[xc-width/2-400,yc-300,xc-width/2,yc+100]);
             Screen('Flip',w);
             Screen('Drawtext',w,sentence,xc-width/2,yc,[255 255 255]);
             Screen('Flip',w);
@@ -203,9 +216,9 @@ for i=1:100 % 100 sentence; size(audio_files)
                 Screen('Drawtext',w,sentence,xc-width/2,yc,[255 255 255]);
                 Screen('Flip',w);
                 if  send_trigger 
-                    if strcmpi(type,'ECoG')
-                        fprintf(arduino,'0');
-                    elseif strcmpi(type,'SEEG')
+                    %if strcmpi(type,'ECoG')
+                    %    fprintf(arduino,'0');
+                    if strcmpi(type,'SEEG')
                         send_ns_trigger(TriggerValue, TriggerPort);
                     end
                 end
@@ -231,6 +244,7 @@ for i=1:100 % 100 sentence; size(audio_files)
         
         % keep pausing for a long time
         if pausing
+            pause(0.3);
             trial_begin=datevec(datenum(datetime));
         end
         %pause(0.1);
@@ -254,9 +268,9 @@ end
 
 %% close port
 if  send_trigger 
-    if strcmpi(type,'ECoG')
-        fclose(arduino);
-    elseif strcmpi(type,'SEEG')
+    %if strcmpi(type,'ECoG')
+    %    fclose(arduino);
+    if strcmpi(type,'SEEG')
         close_ns_port(TriggerPort);
     end
 end
