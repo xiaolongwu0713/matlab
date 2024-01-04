@@ -34,4 +34,6 @@ fopen(arduino);
 while 1
 fprintf(arduino,'0');
 pause(1);
+fprintf("sending trigger \n");
 end
+fclose(arduino);

@@ -39,9 +39,9 @@ void loop() {
     if(command==0)
     {
       Serial.println("sending trigger");
-      digitalWrite(outPin, HIGH);
-      delay(1000);
-      digitalWrite(outPin, LOW);
+      digitalWrite(outPin, HIGH); // switch on
+      delay(500);
+      digitalWrite(outPin, LOW); // switch off
       delay(500);
     }
 
