@@ -1,25 +1,16 @@
-% prepare the folder like below
-% -subject_dir
-%   -DICOM
-%       -MRI
-%       -CT
-%it will create below folder and put the converted img files in the corresponding
-%folder
-%-subject_dir
-%   -NIfTI
-%       -MRI
-%       -CT
-subjectDirectory='/Volumes/second/data_local/iEEGview/subjects/HHFU016';
+%% only change this part and run
+% This script will generate a NIfTI folder under the subject dir
+subjectDirectory='/Volumes/second/data_local/iEEGview/subjects/SEEG2';
 %MRI_folder_name='MRI';
 %CT_folder_name='CT';
 mriDICOMpath = strcat(subjectDirectory, '/DICOM/MRI/');
 ctDICOMpath = strcat(subjectDirectory, '/DICOM/CT/');
 
 % gets all dicom files from dicom folder
-mriDICOMfiles = dir(strcat(mriDICOMpath, '/*.dcm')); 
-ctDICOMfiles = dir(strcat(ctDICOMpath, '/*.IMA')); % *.dcm
+mriDICOMfiles = dir(strcat(mriDICOMpath, '/IMG*')); 
+ctDICOMfiles = dir(strcat(ctDICOMpath, '/IMG*')); % *.dcm
 
-
+%%
 % puts dicom file names in array
 mriDICOMfilenames = {mriDICOMfiles.name}';
 ctDICOMfilenames = {ctDICOMfiles.name}';

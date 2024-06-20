@@ -3,15 +3,15 @@
 % "SingleWordProductionDutch" from paper "Dataset of Speech Production in
 % intracranial Electroencephalography"
 %%
-for sub={'01','02','03','04','05','06','07','08','09','10'}
-%sub='10';
+%for sub={'01','02','03','04','05','06','07','08','09','10'}
+sub='10';
 sub=char(sub);
 cortex_L=load(['sub-',sub,'/sub-',sub,'_lh_pial.mat']);
 cortex_R=load(['sub-',sub,'/sub-',sub,'_rh_pial.mat']);
 %viewBrain(cortex, Etala, {'brain'}, transp, colix, view_vect);
 colix=32;
-viewBrain(cortex_L.cortex, 0, {'brain'}, 0.2, colix, 'front');
-viewBrain(cortex_R.cortex, 0, {'brain'}, 0.2, colix, 'front');
+viewBrain(cortex_L.cortex, 0, {'brain'}, 0.4, colix, 'front');
+viewBrain(cortex_R.cortex, 0, {'brain'}, 0.4, colix, 'front');
 
 b=readcell(['sub-',sub,'/sub-',sub,'_task-wordProduction_space-ACPC_electrodes.tsv'],'FileType','text');
 ele=b(2:end,2:4);
@@ -41,9 +41,10 @@ selected_ele=selected_files(:,2:4);
 plotBalls(cell2mat(selected_ele), [1 0 0], sizes); % radius: 0.8
 
 axis equal
-saveas(gcf,['sub-',sub,'/plot.fig']);
-clf
 
-end
+%saveas(gcf,['sub-',sub,'/plot.fig']);
+%clf
 
-openfig('/Users/xiaowu/My Drive/matlab/plot_brain/speech_Dutch/sub-10/plot.fig')
+%end
+
+%openfig('/Users/xiaowu/My Drive/matlab/plot_brain/speech_Dutch/sub-10/plot.fig')

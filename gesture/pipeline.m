@@ -26,11 +26,12 @@ for i = 1 : size(all_Info, 1)
     Fs = all_Info(i, 2);
     subInfo = get_sub_info(pn);
 end
-mat2np(all_Info, strcat(info_dir,'info.npy'), 'int16')
+%mat2np(all_Info, strcat(info_dir,'info.npy'), 'int16')
 %writematrix(Inf,strcat(info_dir,'info.txt'))
 %%
 plotty=1;
 for i = 1 : size(Info, 1) 
+    i=1;
     pn = Info(i, 1);
     Fs = Info(i, 2);
     
@@ -44,7 +45,7 @@ for i = 1 : size(Info, 1)
     % SEEG 信号预处理， 滤波, 重参考, 
     % 获得EMG 对应的trigger 对齐为切片做准备.
     
-     %preprocessing2(pn, 1000);
+    preprocessing2(pn, 1000);
     
     % preprocess for DeepConvNet.
 %     preprocessing3(pn, 1000);
@@ -52,10 +53,8 @@ for i = 1 : size(Info, 1)
 %     pre_3_psd_v2(pn, 1000)
     
     %pre_3_psd_v3(pn)
+    break;
 end
-
-
-
 
 
 

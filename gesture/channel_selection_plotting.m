@@ -31,12 +31,6 @@ end
 load(strcat(meta_dir,'selected_channels_gumbel.mat'))
 tmp=selected_channels_gumbel;
 clear selected_channels_gumbel;
-% for index = 1:length(final_good_sids)
-%     sid=final_good_sids(index);
-%     key=strcat('sid',num2str(sid));
-%     selected_channels_gumbel.(key)=tmp{1,index}.(key);
-% end
-
 for index = 1:length(tmp)
     key=fieldnames(tmp{index});
     selected_channels_gumbel.(key{1})=tmp{1,index}.(key{1});

@@ -83,7 +83,7 @@ for i=1:sessionNum
     goodChns_index{i} = good_channels_index;
     Datacell{i}=Data;   
 end
-
+% should be intersect not union? 
 good_channels_index_union = union(goodChns_index{1}, goodChns_index{2});
 good_channels=good_channels_index_union;
 %good_channels=SubInfo.UseChn(good_channels_index_union); the

@@ -21,7 +21,7 @@ Inf = Inf(goodSubj,:);
 
 
 %%
-pn = 10;
+pn = 3;
 Fs = 2000;
 plotty=0;
 subInfo = get_sub_info(pn);

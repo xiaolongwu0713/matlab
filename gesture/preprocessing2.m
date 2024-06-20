@@ -13,7 +13,7 @@ strname=strcat(address,'preprocessing1.mat');
 load(strname,'Datacell','good_channels');
 
 for i=1:sessionNum
-        fprintf('\n session %d', i);
+   fprintf('\n session %d', i);
 %% filter the BCI signal.
     Data = Datacell{i};  % 184= chn + emg1 +emg2 + emgdiff + trigger_label
     trigger_indexes = Data(:,end);
@@ -32,7 +32,8 @@ for i=1:sessionNum
     title('filtered signal');
 %% alignment of feature_lable and EMG.
     EMGdiff = Data(:,end-1); % emg diff data
-    EMGdiff_smooth=smooth(abs(EMGdiff),0.025*Fs);
+    EMGdiff_smooth=smooth(abs(EMGdiff),0.025*Fs); % requires the curve fitting toolbox
+    %EMGdiff_smooth=smoothdata(abs(EMGdiff),"gaussian",25);
     
     EMG_trigger=zeros(size(Data,1),1);
     trigger=find(trigger_indexes~=0); % search for the trigger position and label
@@ -59,8 +60,8 @@ for i=1:sessionNum
         end
     end
 %% rereference.
-    BCIdata_referenced=cAr_EEG_Local(BCIdata,good_channels,pn);                
-      
+    %BCIdata_referenced=cAr_EEG_Local(BCIdata,good_channels,pn);                
+    BCIdata_referenced=BCIdata;
     Data=[BCIdata_referenced(:,good_channels),EMG,trigger_indexes, EMG_trigger];% (eegdata,2*EMG, 1*fealabel,1*EMG_trigger)
     %Data=[EMG,EMGdiff,trigger_indexes, EMG_trigger];
     Datacell{i}=Data;          
