@@ -1,4 +1,5 @@
 %% Versioin 4: isolated words; tasks: speak + imagine; alignment using patient event trigger;
+% Two triggers:  trigger 1: overt speech;  trigger 2: covert speech
  
 %%
 sca;close all;clear all;delete(instrfindall);
