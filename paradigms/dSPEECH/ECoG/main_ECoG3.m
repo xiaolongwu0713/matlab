@@ -1,5 +1,5 @@
 %% Versioin 4: isolated words; tasks: speak + imagine; alignment using patient event trigger;
-% imagining speech automatically start right after overt speech (no trigger needed)
+% One trigger: imagining speech automatically start right after overt speech (no trigger needed for covert speech)
  
 %%
 sca;close all;clear all;delete(instrfindall);
