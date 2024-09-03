@@ -3,7 +3,9 @@ global raw_dir processing_dir meta_dir root_dir std_brain_model_dir;
 [ret, name] = system('hostname');
 if strcmp(strip(name),'LongsMac')
     raw_dir='/Volumes/Samsung_T5/data/';
-    processing_dir='/Volumes/Samsung_T5/data/';
+    %processing_dir='/Volumes/Samsung_T5/data/';
+    %raw_dir='/Volumes/second/data_local/';
+    processing_dir='/Volumes/second/data_local/';
     meta_dir='/Users/xiaowu/mydrive/meta/';
     root_dir = '/Users/xiaowu/mydrive/matlab/';  % this is project root on google drive
     

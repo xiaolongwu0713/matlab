@@ -119,7 +119,7 @@ for i=1:lines % 100 sentence; size(audio_files)
     tmp=strcat(string(datetime),prompt);
     events=[events,tmp];
     tmp=split(prompt,'—');
-    first=char(tmp(1,1)); first=first(find(~issp   ace(first)));
+    first=char(tmp(1,1)); first=first(find(~isspace(first)));
     second=char(tmp(2,1)); second=second(find(~isspace(second)));
     third=char(tmp(3,1)); third=third(find(~isspace(third)));
 

@@ -1,5 +1,8 @@
 %% Versioin 4: isolated words; tasks: speak + imagine; alignment using patient event trigger;
+% One trigger: imagining speech automatically start right after overt speech (no trigger needed for covert speech)
  
+% update: add visual cue to promote tasks and verb cue to indicate next
+% trial.
 %%
 sca;close all;clear all;delete(instrfindall);
 Priority(1);
@@ -12,8 +15,8 @@ result_folder=['result/',datestr(now,'yyyymmddHHMM'),'_ECoG'];
 type='ECoG';
 
 %% connect to arduino
-arduino=serial("/dev/tty.usbmodem141201",'BaudRate',115200);
-fopen(arduino);
+%arduino=serial("/dev/tty.usbmodem141201",'BaudRate',115200);
+%fopen(arduino);
 
 
 %% audio setup
@@ -36,12 +39,36 @@ Screen('Preference', 'SkipSyncTests', 1);
 whichScreen = max(Screen('Screens')); 
 white = WhiteIndex(whichScreen);
 black = BlackIndex(whichScreen);
-[w, rect] = Screen('OpenWindow', whichScreen, black ,[100,100,900,800]); % ,[100,100,900,800]
+%[w, rect] = Screen('OpenWindow', whichScreen, black ,[100,100,900,800]); % ,[100,100,900,800]
+[w, rect] = Screen('OpenWindow', whichScreen, [100,100,100] ,[100,100,1900,1900]);
 slack=Screen('GetFlipInterval',w)/2;
 [xc,yc] = WindowCenter(w);%xc=960,yc=540
 % Get the screen dimensions
 screenWidth = rect(3); 
 screenHeight = rect(4);
+
+Screen('BlendFunction', w, 'GL_SRC_ALPHA', 'GL_ONE_MINUS_SRC_ALPHA');
+%smImSq = [0 0 250 250];
+%[smallIm, xOffsetsigS, yOffsetsigS] = CenterRect(smImSq, rect);
+smallIm=[0 yc-100 250 yc+100];
+[img1, ~, alpha] = imread('mouth.png');
+img1(:, :, 4) = alpha;
+texture_overt = Screen('MakeTexture', w, img1);
+
+[img2, ~, alpha] = imread('thinking.png');
+img2(:, :, 4) = alpha;
+texture_covert = Screen('MakeTexture', w, img2);
+
+%Screen('DrawTexture', w, texture1, [], smallIm);
+%Screen('Flip', w);
+%fprintf('without the alpha channel.')
+%pause(5)
+
+
+%sca;
+%return 
+
+
 
 %return; %quit(10);
 %Screen('CloseAll');
@@ -121,7 +148,8 @@ for i=1:lines % 100 sentence; size(audio_files)
     first=char(tmp(1,1)); first=first(find(~isspace(first)));
     second=char(tmp(2,1)); second=second(find(~isspace(second)));
     third=char(tmp(3,1)); third=third(find(~isspace(third)));
-
+    
+    Screen('DrawTexture', w, texture_overt, [], smallIm);
     Screen('Drawtext',w,first,xc-400,yc,[255 255 255]);
     Screen('Drawtext',w,second,xc-50,yc,[255 255 255]);
     Screen('Drawtext',w,third,xc+300,yc,[255 255 255]);
@@ -152,36 +180,42 @@ for i=1:lines % 100 sentence; size(audio_files)
             %recordedaudio = [recordedaudio audiodata];
             beep;
             pause(pause_time);
+            Screen('DrawTexture', w, texture_overt, [], smallIm);
             Screen('Drawtext',w,first,xc-400,yc,[0 255 0]);
             Screen('Drawtext',w,second,xc-50,yc,[255 255 255]);
             Screen('Drawtext',w,third,xc+300,yc,[255 255 255]);
             Screen('Drawtext',w,progress,xc*2-400,yc*2-100,[255 255 255]);
             Screen('Flip',w);
             pause(pause_time);
+            Screen('DrawTexture', w, texture_overt, [], smallIm);
             Screen('Drawtext',w,first,xc-400,yc,[255 255 255]);
             Screen('Drawtext',w,second,xc-50,yc,[0 255 0]);
             Screen('Drawtext',w,third,xc+300,yc,[255 255 255]);
             Screen('Drawtext',w,progress,xc*2-400,yc*2-100,[255 255 255]);
             Screen('Flip',w);
             pause(pause_time);
+            Screen('DrawTexture', w, texture_overt, [], smallIm);
             Screen('Drawtext',w,first,xc-400,yc,[255 255 255]);
             Screen('Drawtext',w,second,xc-50,yc,[255 255 255]);
             Screen('Drawtext',w,third,xc+300,yc,[0 255 0]);
             Screen('Drawtext',w,progress,xc*2-400,yc*2-100,[255 255 255]);
             Screen('Flip',w);
             pause(pause_time);
+            Screen('DrawTexture', w, texture_covert, [], smallIm);
             Screen('Drawtext',w,first,xc-400,yc,[255 0 0]);
             Screen('Drawtext',w,second,xc-50,yc,[255  255 255]);
             Screen('Drawtext',w,third,xc+300,yc,[255 255 255]);
             Screen('Drawtext',w,progress,xc*2-400,yc*2-100,[255 255 255]);
             Screen('Flip',w);
             pause(pause_time);
+            Screen('DrawTexture', w, texture_covert, [], smallIm);
             Screen('Drawtext',w,first,xc-400,yc,[255 255 255]);
             Screen('Drawtext',w,second,xc-50,yc,[255 0 0]);
             Screen('Drawtext',w,third,xc+300,yc,[255 255 255]);
             Screen('Drawtext',w,progress,xc *2-400,yc*2-100,[255 255 255]);
             Screen('Flip',w);
             pause(pause_time);
+            Screen('DrawTexture', w, texture_covert, [], smallIm);
             Screen('Drawtext',w,first,xc-400,yc,[255 255 255]);
             Screen('Drawtext',w,second,xc-50,yc,[255 255 255]);
             Screen('Drawtext',w,third,xc+300,yc,[255 0 0]);
@@ -191,11 +225,13 @@ for i=1:lines % 100 sentence; size(audio_files)
             
             break;
         end
+        
+        % visual cue the next trial
+        Screen('Drawtext',w,'Next trial' ,xc*2-400,yc*2-100,[255 255 255]);
+        Screen('Flip',w);
+        pause(pause_time);
     end
 
-    
-
-    
     % read and record sound
     audiodata = PsychPortAudio('GetAudioData', pahandle);
     recordedaudio = [recordedaudio audiodata];

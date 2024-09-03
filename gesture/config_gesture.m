@@ -2,7 +2,7 @@ global raw_dir processing_dir meta_dir root_dir electrode_dir;
 [ret, name] = system('hostname');
 if strcmp(strip(name),'LongsMac')
     raw_dir=strcat(raw_dir,'gesture/Raw_Data_All/');
-    processing_dir=strcat(processing_dir,'gesture/preprocessing/');
+    processing_dir=strcat(processing_dir,'gesture/preprocessing/'); % preprocessing_no_re_ref
     meta_dir=strcat(meta_dir,'gesture/');
     project_dir =strcat(root_dir, 'gesture/');  % this is project root on google drive
     electrode_dir=strcat(meta_dir, 'EleCTX_Files/');

@@ -1,4 +1,4 @@
-%%
+%% !!! Check the re_reference status; Save the no re-referenced data to folder gesture\preprocessing_no_re_ref.
 config_all;
 config_gesture;
 %% process all together
@@ -11,14 +11,15 @@ all_Info = [2, 1000; 3, 1000; 4, 1000; 5, 1000; 7, 1000; 8, 1000; 9, 1000; 10, 2
 	   41,2000;
        ];
 allSubj=all_Info(:,1);
-goodSubj = [2,3,4,10,13,17,18,29,32,41];  %P4, P10, P13,P17,P29,P32,P34,P41
+goodSubj = [2,4,10,13,17,29,32,41]; %[2,4,10,13,17,29,32,41];  %P4, P10, P13,P17,P29,P32,P34,P41
 good_index=ismember(all_Info(:,1),goodSubj);
 badSubj=setdiff(allSubj,goodSubj);
 bad_index=ismember(all_Info(:,1),badSubj);
 
-
-Info = all_Info(good_index,:);
+these_subjects=[3,];
+%Info = all_Info(good_index,:);
 %Inf = all_Info(bad_index,:);
+Info = all_Info(these_subjects,:);
 
 %% check all subject info existance
 for i = 1 : size(all_Info, 1)
@@ -29,31 +30,30 @@ end
 %mat2np(all_Info, strcat(info_dir,'info.npy'), 'int16')
 %writematrix(Inf,strcat(info_dir,'info.txt'))
 %%
-plotty=1;
+plotty=0;
 for i = 1 : size(Info, 1) 
-    i=1;
+    %i=1;
     pn = Info(i, 1);
     Fs = Info(i, 2);
     
     % 合并 trigger 向量.
     % EMG 信号的预处理.
     % 剔除噪声通道.
-     subInfo = get_sub_info(pn);
-%     
+    subInfo = get_sub_info(pn);   
     preprocessing1(pn, Fs, subInfo, plotty);
     
     % SEEG 信号预处理， 滤波, 重参考, 
     % 获得EMG 对应的trigger 对齐为切片做准备.
     
-    preprocessing2(pn, 1000);
+    preprocessing2(pn, 1000,plotty);
     
     % preprocess for DeepConvNet.
-%     preprocessing3(pn, 1000);
+    %preprocessing3(pn, 1000);
     
-%     pre_3_psd_v2(pn, 1000)
+    %pre_3_psd_v2(pn, 1000)
     
     %pre_3_psd_v3(pn)
-    break;
+    %break;
 end
 
 

@@ -1,4 +1,4 @@
-function [Datacell, channelNum] = preprocessing2(subj, fs)
+function [Datacell, channelNum] = preprocessing2(subj, fs, plotty)
 %%
 fprintf('\n subj %d: preprocessing2....', subj);
 global processing_dir;
@@ -22,18 +22,22 @@ for i=1:sessionNum
     
     AllchannelNum = size(BCIdata,2);
     
-    figure (1);clf;
-    subplot(211);plot(BCIdata(:,1));
-    title('raw signal');
+    if plotty==1
+        figure (1);clf;
+        subplot(211);plot(BCIdata(:,1));
+        title('raw signal');
+    end
     
     OME=[0.5 400];
     BCIdata=cFilterD_EEG(BCIdata,AllchannelNum,Fs,2,OME); % with a Notch filter
-    subplot(212);plot(BCIdata(:,1));
-    title('filtered signal');
-%% alignment of feature_lable and EMG.
+    if plotty==1
+        subplot(212);plot(BCIdata(:,1));
+        title('filtered signal');
+    end
+%% alignment of feature_lable (obtained from EEG trigger channels) and EMG.
     EMGdiff = Data(:,end-1); % emg diff data
-    EMGdiff_smooth=smooth(abs(EMGdiff),0.025*Fs); % requires the curve fitting toolbox
-    %EMGdiff_smooth=smoothdata(abs(EMGdiff),"gaussian",25);
+    %EMGdiff_smooth=smooth(abs(EMGdiff),0.025*Fs); % requires the curve fitting toolbox
+    EMGdiff_smooth=smoothdata(abs(EMGdiff),"gaussian",25); % same as smooth
     
     EMG_trigger=zeros(size(Data,1),1);
     trigger=find(trigger_indexes~=0); % search for the trigger position and label

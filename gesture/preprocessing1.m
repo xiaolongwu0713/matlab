@@ -69,16 +69,19 @@ for i=1:sessionNum
     EMG(:,1:nEMG)=filtfilt(B,A,EMG(:,1:nEMG));
         
     EMGDIF=EMG(:,1)-EMG(:,2);
-    figure (2);clf;
-    plot(EMGDIF);
-    title('EMG abstraction');
+    if plotty==1
+        figure (2);clf;
+        plot(EMGDIF);
+        title('EMG abstraction');
+    end
         
 %% select useful channals
-    
-    figure(3);clf;
+    if plotty==1
+        figure(3);clf;
+    end
     Data = Data(:, SubInfo.UseChn);
     Data = [Data, EMG,EMGDIF, feaLabel]; % include EMG data:(eegdata,emgx2channel,emgdiffx1channel,featurelabel)
-    good_channels_index = remove_bad_channels(Data(:, 1:end-4), Fs, 10);
+    good_channels_index = remove_bad_channels(Data(:, 1:end-4), Fs, 10,plotty);
     
     goodChns_index{i} = good_channels_index;
     Datacell{i}=Data;   
