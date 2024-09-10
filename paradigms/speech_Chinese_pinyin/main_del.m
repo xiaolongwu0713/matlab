@@ -1,12 +1,10 @@
-%% version 1: two dots at the begining of the experiment + one dot betweeen overt and covert speech.
-
 % marker=10: start the recording ---> marker=8: user press any key to start
-% the task ---> marker=5; marker=10: stop the recording;
+% the task ---> marker=1,2...10,11,..25: the i-th line ---->
+% marker=10: stop the recording;
 
 % operation: run the experiment-->SPACE bar to pause--->'ESC' to terminate
-% and save result ; or run the experiment--->directly 'ESC' to terminate the
+% and save result; or run the experiment--->directly 'ESC' to terminate the
 % experiment.
-
 
 %% config computer
 sca;    
@@ -36,7 +34,7 @@ if send_trigger
     ioObj = io64;     
     status = io64(ioObj);     
     if status == 0  
-        disp('inpoutx64.dlgl successfully installed.')
+        disp('inpoutx64.dll successfully installed.')
     else
         error('inpoutx64.dll installation failed.')  
     end   

@@ -14,9 +14,7 @@ marker_length=0.1;
 marker_interval=1;
 marker=[101, 1,4,5,8,300,9,3,2,200,];
 
-
-
-     
+  
 for m=marker
     m;
     io64(ioObj,address,m);
