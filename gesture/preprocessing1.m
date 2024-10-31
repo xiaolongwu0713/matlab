@@ -52,11 +52,13 @@ for i=1:sessionNum
      plot(feaLabel);
     end
     
-%% filter the EMG data
+    
+%% filter the EMG data (temporarily disabled the filter)
     EMG = Data(:, SubInfo.EmgChn);
     nEMG = size(EMG, 2); % 2 channel EMG
-   
-%      	Notch IIRCOMB filter
+    EMGDIF=EMG(:,1)-EMG(:,2);
+%{ 
+%   Notch IIRCOMB filter
     F0=50;q=30;
     n=round(Fs/F0);
     bw=(F0/(Fs/2))/q;
@@ -74,7 +76,7 @@ for i=1:sessionNum
         plot(EMGDIF);
         title('EMG abstraction');
     end
-        
+%} 
 %% select useful channals
     if plotty==1
         figure(3);clf;

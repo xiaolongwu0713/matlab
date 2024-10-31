@@ -6,7 +6,7 @@
 %s = serialport;
 
 %% Version 4: isolated words; tasks: speak + imagine; alignment using patient event trigger;
-% One trigger: imagining speech automatically start right after overt speech (no trigger needed for covert speech)
+% Two triggers:  trigger 1: overt speech;  trigger 2: covert speech
  
 % update: add visual cue to promote button pressiong
 %%
@@ -22,8 +22,7 @@ type='ECoG';
 
 %% connect to arduino
 %arduino=serial("/dev/tty.usbmodem141201",'BaudRate',115200);
-arduino=serial('COM3','BaudRate',115200);
-%arduino=serial('COM5','BaudRate',115200);
+arduino=serial('COM5','BaudRate',115200);
 fopen(arduino);
 
 %% audio setup
@@ -180,92 +179,67 @@ for i=1:lines % 100 sentence; size(audio_files)
     % NEW BLOCK
     lastPressTime = -Inf;  % Set to -Inf so the first press works
     % END NEW BLOCK
-  
-    while 1
-        [pressed, keyCode]=KbQueueCheck(deviceIndex);
-        pressedKeys = KbName(keyCode);
-        if strcmp(pressedKeys,'ESCAPE')
-            break;
-        end
-        signal=fscanf(arduino,'%c');
-        trigger=str2num(signal);
-        %[pressed, keyCode]=KbQueueCheck(deviceIndex);
-        %pressedKeys = KbName(keyCode);
-        if trigger==1 %strcmp(pressedKeys,'space')
 
-            % NEW BLOCK
-            currentTime = GetSecs;
-            if (currentTime - lastPressTime) > 8
-                lastPressTime = currentTime;
-                % END NEW BLOCK
-    
-                %mark=[1 1 2 2 3 3; 1 1 2 2 3 3];
-                %audiodata = PsychPortAudio('GetAudioData', pahandle);
-                %audiodata = [audiodata mark];
-                %recordedaudio = [recordedaudio audiodata];
-                beep;
-                pause(pause_time);
-                Screen('DrawTexture', w, texture_overt, [], smallIm);
-                Screen('Drawtext',w,first,xc-700,yc,[0 255 0]);
-                Screen('Drawtext',w,second,xc-75,yc,[255 255 255]);
-                Screen('Drawtext',w,third,xc+525,yc,[255 255 255]);
-                Screen('Drawtext',w,progress,xc*2-400,yc*2-100,[255 255 255]);
-                Screen('Flip',w);
-                pause(pause_time);
-                Screen('DrawTexture', w, texture_overt, [], smallIm);
-                Screen('Drawtext',w,first,xc-700,yc,[255 255 255]);
-                Screen('Drawtext',w,second,xc-75,yc,[0 255 0]);
-                Screen('Drawtext',w,third,xc+525,yc,[255 255 255]);
-                Screen('Drawtext',w,progress,xc*2-400,yc*2-100,[255 255 255]);
-                Screen('Flip',w);
-                pause(pause_time);
-                Screen('DrawTexture', w, texture_overt, [], smallIm);
-                Screen('Drawtext',w,first,xc-700,yc,[255 255 255]);
-                Screen('Drawtext',w,second,xc-75,yc,[255 255 255]);
-                Screen('Drawtext',w,third,xc+525,yc,[0 255 0]);
-                Screen('Drawtext',w,progress,xc*2-400,yc*2-100,[255 255 255]);
-                Screen('Flip',w);
-                pause(pause_time);
-                % NEW BLOCK
-                Screen('DrawTexture', w, texture_covert, [], smallIm);
-                Screen('Drawtext',w,first,xc-700,yc,[255 255 255]);
-                Screen('Drawtext',w,second,xc-75,yc,[255 255 255]);
-                Screen('Drawtext',w,third,xc+525,yc,[255 255 255]);
-                Screen('Drawtext',w,progress,xc*2-400,yc*2-100,[255 255 255]);
-                Screen('Flip',w);
-                pause(pause_time);
-                % END NEW BLOCK
-                Screen('DrawTexture', w, texture_covert, [], smallIm);
-                Screen('Drawtext',w,first,xc-700,yc,[255 0 0]);
-                Screen('Drawtext',w,second,xc-75,yc,[255  255 255]);
-                Screen('Drawtext',w,third,xc+525,yc,[255 255 255]);
-                Screen('Drawtext',w,progress,xc*2-400,yc*2-100,[255 255 255]);
-                Screen('Flip',w);
-                pause(pause_time);
-                Screen('DrawTexture', w, texture_covert, [], smallIm);
-                Screen('Drawtext',w,first,xc-700,yc,[255 255 255]);
-                Screen('Drawtext',w,second,xc-75,yc,[255 0 0]);
-                Screen('Drawtext',w,third,xc+525,yc,[255 255 255]);
-                Screen('Drawtext',w,progress,xc *2-400,yc*2-100,[255 255 255]);
-                Screen('Flip',w);
-                pause(pause_time);
-                Screen('DrawTexture', w, texture_covert, [], smallIm);
-                Screen('Drawtext',w,first,xc-700,yc,[255 255 255]);
-                Screen('Drawtext',w,second,xc-75,yc,[255 255 255]);
-                Screen('Drawtext',w,third,xc+525,yc,[255 0 0]);
-                Screen('Drawtext',w,progress,xc*2-400,yc*2-100,[255 255 255]);
-                Screen('Flip',w);
-                pause(pause_time);
-                
-                % visual cue the next trial
-                %Screen('Drawtext',w,feedback(),xc-125,yc,[50 150 255]);
-                %Screen('Flip',w);
-                %pause(pause_time);
-                % NEW BLOCK
-                trigger=0;
-                KbQueueFlush(deviceIndex);
-                % END NEW BLOCK
+    m=1;
+    % overt speech
+    if m==1 
+        while 1
+            [pressed, keyCode]=KbQueueCheck(deviceIndex);
+            pressedKeys = KbName(keyCode);
+            if strcmp(pressedKeys,'ESCAPE')
                 break;
+            end
+            signal=fscanf(arduino,'%c');
+            trigger=str2num(signal);
+            %[pressed, keyCode]=KbQueueCheck(deviceIndex);
+            %pressedKeys = KbName(keyCode);
+            if trigger==1 %strcmp(pressedKeys,'space')
+
+                % NEW BLOCK
+                currentTime = GetSecs;
+                if (currentTime - lastPressTime) > 3
+                    lastPressTime = currentTime;
+                    % END NEW BLOCK
+
+                    %mark=[1 1 2 2 3 3; 1 1 2 2 3 3];
+                    %audiodata = PsychPortAudio('GetAudioData', pahandle);
+                    %audiodata = [audiodata mark];
+                    %recordedaudio = [recordedaudio audiodata];
+                    beep;
+                    pause(pause_time);
+                    Screen('DrawTexture', w, texture_overt, [], smallIm);
+                    Screen('Drawtext',w,first,xc-700,yc,[0 255 0]);
+                    Screen('Drawtext',w,second,xc-75,yc,[255 255 255]);
+                    Screen('Drawtext',w,third,xc+525,yc,[255 255 255]);
+                    Screen('Drawtext',w,progress,xc*2-400,yc*2-100,[255 255 255]);
+                    Screen('Flip',w);
+                    pause(pause_time);
+                    Screen('DrawTexture', w, texture_overt, [], smallIm);
+                    Screen('Drawtext',w,first,xc-700,yc,[255 255 255]);
+                    Screen('Drawtext',w,second,xc-75,yc,[0 255 0]);
+                    Screen('Drawtext',w,third,xc+525,yc,[255 255 255]);
+                    Screen('Drawtext',w,progress,xc*2-400,yc*2-100,[255 255 255]);
+                    Screen('Flip',w);
+                    pause(pause_time);
+                    Screen('DrawTexture', w, texture_overt, [], smallIm);
+                    Screen('Drawtext',w,first,xc-700,yc,[255 255 255]);
+                    Screen('Drawtext',w,second,xc-75,yc,[255 255 255]);
+                    Screen('Drawtext',w,third,xc+525,yc,[0 255 0]);
+                    Screen('Drawtext',w,progress,xc*2-400,yc*2-100,[255 255 255]);
+                    Screen('Flip',w);
+                    pause(pause_time);
+                    % NEW BLOCK
+                    trigger=0;
+                    KbQueueFlush(deviceIndex);
+                    % END NEW BLOCK
+                    % visual cue the next trial
+                    %Screen('Drawtext',w,'Next trial' ,xc*2-400,yc*2-100,[255 255 255]);
+                    %Screen('Drawtext',w,feedback(),xc-125,yc,[50 150 255]);
+                    %Screen('Flip',w);
+                    %Spause(0.5);
+                    m=2;
+                    break;
+                end
             end
         end
     end
@@ -274,6 +248,77 @@ for i=1:lines % 100 sentence; size(audio_files)
     audiodata = PsychPortAudio('GetAudioData', pahandle);
     recordedaudio = [recordedaudio audiodata];
     
+    Screen('DrawTexture', w, texture_covert, [], smallIm);
+    Screen('Drawtext',w,first,xc-700,yc,[255 255 255]);
+    Screen('Drawtext',w,second,xc-75,yc,[255 255 255]);
+    Screen('Drawtext',w,third,xc+525,yc,[255 255 255]);
+    Screen('Drawtext',w,progress,xc*2-400,yc*2-100,[255 255 255]);
+    Screen('Flip',w);
+
+    if m==2
+        while 1
+            [pressed, keyCode]=KbQueueCheck(deviceIndex);
+            pressedKeys = KbName(keyCode);
+            if strcmp(pressedKeys,'ESCAPE')
+                break; % break the while loop
+            end 
+            signal=fscanf(arduino,'%c');   
+            trigger=str2num(signal);
+            %[pressed, keyCode]=KbQueueCheck(deviceIndex);
+            %pressedKeys = KbName(keyCode);
+            if trigger==1 %strcmp(pressedKeys,'space')
+
+                % NEW BLOCK
+                currentTime = GetSecs;
+                if (currentTime - lastPressTime) > 3
+                    lastPressTime = currentTime;
+                    % END NEW BLOCK
+
+                    %mark=[3 3 2 2 1 1; 3 3 2 2 1 1 ];
+                    %audiodata = PsychPortAudio('GetAudioData', pahandle);
+                    %audiodata = [audiodata mark];
+                    %recordedaudio = [recordedaudio audiodata];
+                    beep; 
+                    pause(pause_time);
+                    Screen('DrawTexture', w, texture_covert, [], smallIm);
+                    Screen('Drawtext',w,first,xc-700,yc,[255 0 0]);
+                    Screen('Drawtext',w,second,xc-75,yc,[255  255 255]);
+                    Screen('Drawtext',w,third,xc+525,yc,[255 255 255]);
+                    Screen('Drawtext',w,progress,xc*2-400,yc*2-100,[255 255 255]);
+                    Screen('Flip',w);
+                    pause(pause_time);
+                    Screen('DrawTexture', w, texture_covert, [], smallIm);
+                    Screen('Drawtext',w,first,xc-700,yc,[255 255 255]);
+                    Screen('Drawtext',w,second,xc-75,yc,[255 0 0]);
+                    Screen('Drawtext',w,third,xc+525,yc,[255 255 255]);
+                    Screen('Drawtext',w,progress,xc *2-400,yc*2-100,[255 255 255]);
+                    Screen('Flip',w);
+                    pause(pause_time);
+                    Screen('DrawTexture', w, texture_covert, [], smallIm);
+                    Screen('Drawtext',w,first,xc-700,yc,[255 255 255]);
+                    Screen('Drawtext',w,second,xc-75,yc,[255 255 255]);
+                    Screen('Drawtext',w,third,xc+525,yc,[255 0 0]);
+                    Screen('Drawtext',w,progress,xc*2-400,yc*2-100,[255 255 255]);
+                    Screen('Flip',w);
+                    pause(pause_time);
+                    % visual cue the next trial
+                    Screen('Drawtext',w,feedback(),xc-125,yc,[50 150 255]);
+                    Screen('Flip',w);
+                    pause(pause_time);
+                    % NEW BLOCK
+                    trigger=0;
+                    KbQueueFlush(deviceIndex);
+                    % END NEW BLOCK
+                    break;
+                end
+            end
+        end
+    end
+   
+    % read and record sound
+    audiodata = PsychPortAudio('GetAudioData', pahandle);
+    recordedaudio = [recordedaudio audiodata];
+
     if strcmp(pressedKeys,'ESCAPE')
         break; % break the for loop
     end

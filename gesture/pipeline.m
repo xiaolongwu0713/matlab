@@ -16,7 +16,7 @@ good_index=ismember(all_Info(:,1),goodSubj);
 badSubj=setdiff(allSubj,goodSubj);
 bad_index=ismember(all_Info(:,1),badSubj);
 
-these_subjects=[3,];
+these_subjects=[1,];
 %Info = all_Info(good_index,:);
 %Inf = all_Info(bad_index,:);
 Info = all_Info(these_subjects,:);
@@ -45,7 +45,7 @@ for i = 1 : size(Info, 1)
     % SEEG 信号预处理， 滤波, 重参考, 
     % 获得EMG 对应的trigger 对齐为切片做准备.
     
-    preprocessing2(pn, 1000,plotty);
+    %preprocessing2(pn, 1000,plotty);
     
     % preprocess for DeepConvNet.
     %preprocessing3(pn, 1000);
